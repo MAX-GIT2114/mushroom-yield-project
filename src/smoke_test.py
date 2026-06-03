@@ -1,17 +1,12 @@
-# src/smoke_test.py
-from datetime import date
+import pandas as pd
 
-sample_reading = {
-    "date": date.today().isoformat(),
-    "temperature_c": 22.4,
-    "humidity_pct": 88.5,
-    "co2_ppm": 950,
-    "yield_kg": 12.3,
-}
+df = pd.read_csv(
+    "data/raw/polyhouse_sensors.csv"
+)
 
-print("Polyhouse sensor snapshot:")
-for key, value in sample_reading.items():
-    print(f"  {key}: {value}")
+print("Rows:", len(df))
+print("Columns:", len(df.columns))
 
-assert sample_reading["humidity_pct"] > 80, "Oyster mushrooms need high humidity"
-print("Environment OK.")
+assert len(df) > 0
+
+print("Smoke Test Passed!")
