@@ -1,9 +1,10 @@
-venv/ 
-.env 
-__pycache__/ 
-*.pyc 
-.ipynb_checkpoints/ 
-.DS_Store 
-# Large raw logs - keep locally or in cloud storage 
-data/raw/*.csv 
-!data/raw/.gitkeep 
+# .gitignore
+venv/
+__pycache__/
+.DS_Store
+
+# Ignore data files
+data/raw/*
+data/interim/*
+data/processed/*
+!data/**/.gitkeep  # (Optional) Keeps the folder structure intact without the files
