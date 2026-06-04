@@ -41,3 +41,5 @@ Path(output_file).parent.mkdir(parents=True, exist_ok=True)
 df.to_csv(output_file, index=False)
 
 print(f"Clean rows: {len(df)}")
+
+df.to_parquet("data/interim/02_cleaned.parquet", index=False)
