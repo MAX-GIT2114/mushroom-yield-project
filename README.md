@@ -1154,3 +1154,269 @@ The following validation criteria were satisfied:
 * The selected model represents the best-performing configuration within the defined search space.
 * Exported artifacts allow full reproducibility of tuning results and model evaluation.
 * Search runtime remained practical for an internship-scale machine learning project.
+
+____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+
+# ##Model Comparison and Champion Selection### --day14
+
+## Objective
+
+Evaluate and compare the performance of three machine learning models for mushroom yield prediction:
+
+1. Linear Regression
+2. Random Forest (Default)
+3. Random Forest (Tuned)
+
+The comparison uses the same untouched chronological test set to ensure a fair evaluation and prevent data leakage.
+
+---
+
+## Evaluation Methodology
+
+The following metrics were used to assess model performance:
+
+* Cross-Validation MAE (CV MAE)
+* Test MAE (Mean Absolute Error)
+* RMSE (Root Mean Squared Error)
+* R² Score
+* Training Time
+* Model Interpretability
+
+All models were evaluated on the same test dataset generated during the chronological train/test split.
+
+---
+
+## Model Comparison Table
+
+| Model                 | CV MAE  | Test MAE | RMSE    | R²      | Training Time (s) | Interpretability |
+| --------------------- | ------- | -------- | ------- | ------- | ----------------- | ---------------- |
+| Linear Regression     | Replace | Replace  | Replace | Replace | Replace           | High             |
+| Random Forest Default | Replace | Replace  | Replace | Replace | Replace           | Medium           |
+| Random Forest Tuned   | Replace | Replace  | Replace | Replace | Replace           | Medium-Low       |
+
+---
+
+## Champion Model## --
+
+**Selected Model:** Replace with actual champion model
+
+### Selection Rationale
+
+The champion model was selected based primarily on the lowest Test MAE while also considering RMSE, R² score, model complexity, and interpretability.
+
+If multiple models achieved nearly identical MAE values, the simpler Linear Regression model would be preferred due to:
+
+* Greater transparency
+* Easier stakeholder communication
+* Simpler maintenance
+* Reduced deployment complexity
+
+In this project, the selected champion model demonstrated the best balance between predictive performance and practical deployment considerations.
+
+---
+
+## Predicted vs Actual Yield
+
+A scatter plot comparing actual yield values against model predictions was generated for the champion model.
+
+**Saved Figure:**
+
+`reports/figures/pred_vs_actual.png`
+
+### Interpretation
+
+* Points close to the diagonal line indicate accurate predictions.
+* Larger deviations from the diagonal represent prediction errors.
+* A strong clustering around the diagonal suggests good model performance on unseen data.
+
+---
+
+## Deployment Recommendation
+
+The selected champion model is recommended for deployment as a decision-support tool for mushroom yield forecasting.
+
+The model can assist growers by providing estimated yield predictions based on environmental sensor inputs.
+
+---
+
+## Known Limitations and Edge Cases
+
+### Sensor Range Limitations
+
+The model was trained on a limited range of environmental conditions. Predictions for temperature, humidity, or CO₂ values outside the observed training range may be unreliable.
+
+### Seasonality
+
+The dataset covers a limited time period and may not fully capture long-term seasonal effects or environmental variations.
+
+### Unseen Conditions
+
+Extreme growing conditions not represented in the training data may reduce prediction accuracy.
+
+### Synthetic Dataset Constraints
+
+The project uses generated data for development purposes. Real-world mushroom farms may exhibit additional variability not captured by the synthetic dataset.
+
+### Operational Use
+
+Model predictions should be considered advisory only.
+
+The model is intended to support decision-making and should not replace grower expertise, operational experience, or field observations.
+
+---
+
+## Deliverables
+
+Generated artifacts:
+
+* `reports/model_comparison.csv`
+* `reports/model_comparison.md`
+* `reports/figures/pred_vs_actual.png`
+
+These files provide a complete summary of model evaluation, champion selection, and deployment readiness assessment.
+
+____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+
+# ##Inference and Deployment### --day15
+
+## Objective
+
+Deploy the champion machine learning model as a reusable inference module capable of predicting mushroom yield from environmental sensor readings.
+
+---
+
+## Saved Artifacts
+
+The following artifacts are required for inference:
+
+```text
+models/
+├── random_forest_tuned.joblib
+├── minmax_scaler_train.joblib
+├── feature_cols.json
+```
+
+### Artifact Description
+
+| File                       | Purpose                     |
+| -------------------------- | --------------------------- |
+| random_forest_tuned.joblib | Champion prediction model   |
+| minmax_scaler_train.joblib | Feature scaling transformer |
+| feature_cols.json          | Training feature order      |
+
+---
+
+## Run Inference
+
+### Example Command
+
+From the project root:
+
+```bash
+python src/predict.py --temperature 22 --humidity 88 --co2 920
+```
+
+### Example Output
+
+```text
+Predicted Yield: 16.42 kg
+```
+
+Actual output will vary depending on the trained model.
+
+---
+
+## Python API
+
+The module exposes a public prediction function:
+
+```python
+from src.predict import predict_yield
+
+prediction = predict_yield(
+    temperature_c=22,
+    humidity_pct=88,
+    co2_ppm=920
+)
+
+print(prediction)
+```
+
+### Helper Function
+
+```python
+from src.predict import make_prediction
+
+prediction = make_prediction(
+    temperature=22,
+    humidity=88,
+    co2=920
+)
+```
+
+---
+
+## Reproducibility Notes
+
+### Random Seeds
+
+The following seed was used throughout model development:
+
+```python
+np.random.seed(42)
+random_state=42
+```
+
+### Library Versions
+
+Generate exact versions using:
+
+```bash
+pip freeze > requirements.txt
+```
+
+Typical core libraries:
+
+* numpy
+* pandas
+* scikit-learn
+* matplotlib
+* joblib
+* pyarrow
+
+---
+
+## Dependency Installation
+
+Create a clean virtual environment and install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Validation
+
+Inference was validated by:
+
+1. Loading saved artifacts from the models directory.
+2. Running predictions through `predict.py`.
+3. Comparing results against manual model calls.
+4. Confirming identical predictions for the same inputs.
+
+---
+
+## Deployment Notes
+
+* All paths are relative to the project root.
+* Compatible with Streamlit deployment.
+* Predictions are advisory only.
+* Outputs should support grower decision-making and not replace operational judgment.
+____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+
+
+
