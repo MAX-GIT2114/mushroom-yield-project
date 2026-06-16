@@ -3,7 +3,7 @@ venv/
 __pycache__/
 .DS_Store
 
-# Ignore data files
+#Ignore data files
 data/raw/*
 data/interim/*
 data/processed/*
