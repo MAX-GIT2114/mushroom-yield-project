@@ -1,0 +1,8 @@
+DATA CLEANING SUMMARY
+=====================
+
+Initial rows: 365
+Invalid rows removed: 0
+Duplicates removed: 0
+Final rows: 365
+Null values in yield_kg: 0
