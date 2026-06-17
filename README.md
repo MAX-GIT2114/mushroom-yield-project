@@ -1611,7 +1611,7 @@ Predictions should be used alongside operational expertise, environmental monito
 ```
 __________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
-## Validation
+## Validation  DAY 18
 
 ### Run CLI Prediction
 
@@ -1663,7 +1663,82 @@ Detailed validation scenarios are documented in:
 reports/test_scenarios.md
 ```
 day 18
-__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+# DAY 19 Streamlit web Application
+
+## Run the App
+
+Activate your virtual environment:
+
+```bash
+venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Launch Streamlit:
+
+```bash
+streamlit run app.py
+```
+
+The application will open in your browser.
+
+---
+
+## Features
+
+* Temperature input slider
+* Humidity input slider
+* CO₂ input slider
+* Yield prediction in kilograms
+* Cached model loading using `@st.cache_resource`
+* Out-of-range sensor warnings
+* Advisory prediction disclaimer
+
+---
+
+## Example Usage
+
+Input:
+
+* Temperature: 22°C
+* Humidity: 88%
+* CO₂: 900 ppm
+
+Output:
+
+```text
+Estimated Yield: XX.XX kg
+```
+
+The exact value depends on the trained champion model.
+
+---
+
+## Screenshot
+
+Save a screenshot after successful local execution:
+
+```text
+reports/streamlit_app.png
+```
+
+This screenshot demonstrates:
+
+* Successful application startup
+* Sensor input controls
+* Yield prediction display
+* Working inference pipeline
+
+```
+```
+______________________________________________________________________________________________________________________________________________________________________________
 
 
 
