@@ -1875,5 +1875,317 @@ Extend the application to support multiple cultivation environments with separat
 
 ________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
+# Mushroom Yield Forecast
 
+A machine learning project that predicts daily oyster mushroom yield in a controlled-environment polyhouse using environmental sensor data such as temperature, humidity, and CO₂ concentration.
+
+## Project Overview
+
+Oyster mushroom cultivation is highly dependent on environmental conditions. This project develops and deploys a predictive model that estimates daily mushroom yield from polyhouse sensor readings, helping growers optimize harvesting schedules and environmental control strategies.
+
+The project follows a complete machine learning workflow including:
+
+* Data ingestion and cleaning
+* Exploratory data analysis
+* Feature scaling and validation
+* Model training and evaluation
+* Champion model selection
+* Streamlit deployment
+* Prediction logging and monitoring
+
+## Live Demo
+
+🚀 Streamlit Application:
+
+https://mushroom-yield-project-kxxscjfktzdrjvfcegriut.streamlit.app/
+
+---
+
+## Dataset
+
+The dataset contains daily sensor observations collected over one year.
+
+### Features
+
+| Feature       | Description                           |
+| ------------- | ------------------------------------- |
+| temperature_c | Temperature inside the polyhouse (°C) |
+| humidity_pct  | Relative humidity (%)                 |
+| co2_ppm       | Carbon dioxide concentration (ppm)    |
+| yield_kg      | Daily mushroom yield (kg)             |
+
+### Dataset Statistics
+
+* Total records: 365
+* Time period: Jan 1, 2024 – Dec 30, 2024
+* Missing values: 0
+* Duplicate records removed: 0
+
+---
+
+## Project Structure
+
+```text
+mushroom-yield-project/
+│
+├── app.py
+├── requirements.txt
+├── README.md
+│
+├── data/
+│   ├── raw/
+│   ├── interim/
+│   └── processed/
+│
+├── models/
+│
+├── logs/
+│   └── predictions.csv
+│
+├── reports/
+│   └── figures/
+│
+├── src/
+│   ├── ingest.py
+│   ├── clean.py
+│   ├── split_scale.py
+│   ├── LR_model.py
+│   ├── RF_generator.py
+│   ├── CV_report.py
+│   ├── GridSearch_CV.py
+│   ├── champion.py
+│   ├── residual_analysis.py
+│   └── predict.py
+│
+└── tests/
+```
+
+---
+
+## Data Cleaning
+
+The following validation rules were applied:
+
+* Temperature: 10°C – 35°C
+* Humidity: 50% – 100%
+* CO₂: 400 ppm – 2000 ppm
+* Non-null target values required
+* Forward-fill imputation for short sensor gaps
+* Duplicate timestamps removed
+
+Cleaned data is stored as:
+
+```text
+data/interim/02_cleaned.parquet
+```
+
+---
+
+## Train/Test Split Strategy
+
+To prevent data leakage, a chronological split was used.
+
+* Training Set: First 80% of observations
+* Test Set: Last 20% of observations
+
+| Dataset  | Rows |
+| -------- | ---- |
+| Training | 292  |
+| Testing  | 73   |
+
+### Training Period
+
+2024-01-01 → 2024-10-18
+
+### Testing Period
+
+2024-10-19 → 2024-12-30
+
+Feature scaling was performed using MinMaxScaler fitted only on the training data.
+
+---
+
+## Models Evaluated
+
+### 1. Linear Regression
+
+Baseline model using Ordinary Least Squares.
+
+### 2. Random Forest (Default)
+
+Random Forest Regressor with default hyperparameters.
+
+### 3. Random Forest (Tuned)
+
+Hyperparameter tuning performed using:
+
+* TimeSeriesSplit (3 folds)
+* GridSearchCV
+
+Best parameters:
+
+```json
+{
+  "max_depth": 8,
+  "min_samples_leaf": 5,
+  "n_estimators": 100
+}
+```
+
+---
+
+## Model Performance
+
+| Model                   | CV MAE | Test MAE | Test RMSE | Test R² |
+| ----------------------- | ------ | -------- | --------- | ------- |
+| Linear Regression       | 0.441  | 0.419    | 0.535     | 0.427   |
+| Random Forest (Tuned)   | 0.466  | 0.445    | 0.562     | 0.369   |
+| Random Forest (Default) | 0.475  | 0.450    | 0.580     | 0.327   |
+
+---
+
+## Champion Model
+
+🏆 **Linear Regression**
+
+Selected because:
+
+* Lowest Test MAE
+* Lowest Test RMSE
+* Highest R² score
+* More interpretable
+* Easier to maintain
+
+### Model Coefficients
+
+| Feature     | Effect on Yield |
+| ----------- | --------------- |
+| Temperature | Positive        |
+| Humidity    | Positive        |
+| CO₂         | Negative        |
+
+---
+
+## Streamlit Application Features
+
+* Interactive sensor input sliders
+* Real-time yield prediction
+* Input validation warnings
+* What-if analysis chart
+* Prediction logging
+
+### Input Ranges
+
+| Variable    | Range        |
+| ----------- | ------------ |
+| Temperature | 10–35°C      |
+| Humidity    | 50–100%      |
+| CO₂         | 400–2000 ppm |
+
+---
+
+## Monitoring
+
+All prediction requests are logged to:
+
+```text
+logs/predictions.csv
+```
+
+Logged fields:
+
+* timestamp_utc
+* temperature_c
+* humidity_pct
+* co2_ppm
+* predicted_kg
+
+---
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone <repository-url>
+cd mushroom-yield-project
+```
+
+Create and activate a virtual environment:
+
+```bash
+python -m venv venv
+
+# Windows
+venv\Scripts\activate
+
+# Linux/Mac
+source venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Running the Pipeline
+
+```bash
+python src/ingest.py
+python src/clean.py
+python src/split_scale.py
+python src/LR_model.py
+python src/residual_analysis.py
+python src/RF_generator.py
+python src/CV_report.py
+python src/GridSearch_CV.py
+python src/champion.py
+```
+
+Run tests:
+
+```bash
+pytest tests/
+```
+
+Launch Streamlit:
+
+```bash
+streamlit run app.py
+```
+
+---
+
+## Future Improvements
+
+* Collect real-world production data
+* Add light intensity measurements
+* Add substrate moisture monitoring
+* Explore advanced time-series models
+* Implement automated retraining pipelines
+
+---
+
+## Technologies Used
+
+* Python
+* Pandas
+* NumPy
+* Scikit-learn
+* Matplotlib
+* Joblib
+* Streamlit
+* Pytest
+
+---
+
+
+
+
+Product Development / Data Science Internship Project – 2026
+
+__________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
